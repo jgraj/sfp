@@ -1,4 +1,4 @@
-/// version: 2
+/// version: 3
 
 #ifndef SFP_PANIC
 #define SFP_PANIC(...) std::printf(__VA_ARGS__); std::exit(1);
@@ -10,9 +10,9 @@ namespace SFP {
 	static const size_t MAX_VALUE_LEN = 32;
 	static const size_t MAX_LINE_LEN = MAX_TAB_LEN + MAX_LABEL_LEN + MAX_VALUE_LEN;
 	
-	void close_file(FILE* file) {
+	static void close_file(FILE* file) {
 		if (file == nullptr) {
-			SFP_PANIC("SFP: file is null");
+			return;
 		}
 		std::fclose(file);
 	}
