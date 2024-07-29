@@ -1,4 +1,4 @@
-/// version: 1
+/// version: 2
 
 #ifndef SFP_PANIC
 #define SFP_PANIC(...) std::printf(__VA_ARGS__); std::exit(1);
@@ -10,7 +10,7 @@ namespace SFP {
 	static const size_t MAX_VALUE_LEN = 32;
 	static const size_t MAX_LINE_LEN = MAX_TAB_LEN + MAX_LABEL_LEN + MAX_VALUE_LEN;
 	
-	void free_file(FILE* file) {
+	void close_file(FILE* file) {
 		if (file == nullptr) {
 			SFP_PANIC("SFP: file is null");
 		}
@@ -27,8 +27,8 @@ namespace SFP {
 			return writer;
 		}
 
-		void free() {
-			free_file(this->file);
+		void close() {
+			close_file(this->file);
 			this->file = nullptr;
 		}
 
@@ -156,8 +156,8 @@ namespace SFP {
 			return reader;
 		}
 
-		void free() {
-			free_file(this->file);
+		void close() {
+			close_file(this->file);
 			this->file = nullptr;
 		}
 
@@ -278,6 +278,11 @@ namespace SFP {
 			array.len -= 1;
 			for (size_t i = 0; i < value; ++i) {
 				array[i] = this->read_byte_hex();
+			}
+			char new_line;
+			this->read<char>(&new_line, 1);
+			if (new_line != '\n') {
+				SFP_PANIC("SFP: expected new line");
 			}
 			this->indent -= 1;
 			return array;
