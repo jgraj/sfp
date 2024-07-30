@@ -24,17 +24,17 @@ writer.free();
 
 ### Generated file:
 ```
-example_int:i 1
-example_float:f 2.3
-example_string:b 9
+example_int:i=1
+example_float:f=2.3
+example_string:b=9
 	736f6d652074657874
-example_array:a 2
-	:o 
-		:i 0
-		:i 1
-	:o 
-		:i 2
-		:i 3
+example_array:a=2
+	o=
+		i=0
+		i=1
+	o=
+		i=2
+		i=3
 ```
 
 ### Read example:

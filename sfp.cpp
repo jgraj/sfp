@@ -1,4 +1,4 @@
-/// version: 3
+/// version: 4
 
 #ifndef SFP_PANIC
 #define SFP_PANIC(...) std::printf(__VA_ARGS__); std::exit(1);
@@ -47,10 +47,10 @@ namespace SFP {
 					SFP_PANIC("SFP: label too long (max length: %i)", MAX_LABEL_LEN);
 				}
 				this->write<char>(label, label_len);
+				this->write<char>(":", 1);
 			}
-			this->write<char>(":", 1);
 			this->write<char>(&type, 1);
-			this->write<char>(" ", 1);
+			this->write<char>("=", 1);
 		}
 
 		void write_indent() {
@@ -200,18 +200,18 @@ namespace SFP {
 					SFP_PANIC("SFP: label mismatch (expected %s, got %s)", label, line);
 				}
 				line += label_len;
+				if (line[0] != ':') {
+					SFP_PANIC("SFP: expected ':' after label");
+				}
+				line += 1;
 			}
-			if (line[0] != ':') {
-				SFP_PANIC("SFP: expected ':' before type");
-			}
-			line += 1;
 			char type = line[0];
 			if (type != expected_type) {
 				SFP_PANIC("SFP: type mismatch (expected '%c', got '%c')", expected_type, type);
 			}
 			line += 1;
-			if (line[0] != ' ') {
-				SFP_PANIC("SFP: expected ' ' after type");
+			if (line[0] != '=') {
+				SFP_PANIC("SFP: expected '=' after type");
 			}
 			line += 1;
 			return line;
@@ -238,7 +238,7 @@ namespace SFP {
 				SFP_PANIC("SFP: u32 parse error");
 			}
 			std::free(line_ptr);
-			return 0;
+			return value;
 		}
 
 		double read_f64(const char* label) {
