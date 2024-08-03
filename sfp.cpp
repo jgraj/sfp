@@ -1,14 +1,14 @@
-/// version: 4
+/// version: 5
 
 #ifndef SFP_PANIC
 #define SFP_PANIC(...) std::printf(__VA_ARGS__); std::exit(1);
 #endif
 
 namespace SFP {
-	static const size_t MAX_TAB_LEN = 32;
-	static const size_t MAX_LABEL_LEN = 32;
-	static const size_t MAX_VALUE_LEN = 32;
-	static const size_t MAX_LINE_LEN = MAX_TAB_LEN + MAX_LABEL_LEN + MAX_VALUE_LEN;
+	constexpr size_t max_tab_len = 32;
+	constexpr size_t max_label_len = 32;
+	constexpr size_t max_value_len = 32;
+	constexpr size_t max_line_len = max_tab_len + max_label_len + max_value_len;
 	
 	static void close_file(FILE* file) {
 		if (file == nullptr) {
@@ -43,8 +43,8 @@ namespace SFP {
 		void write_label(const char* label, char type) {
 			if (label != nullptr) {
 				size_t label_len = std::strlen(label);
-				if (label_len > MAX_LABEL_LEN) {
-					SFP_PANIC("SFP: label too long (max length: %i)", MAX_LABEL_LEN);
+				if (label_len > max_label_len) {
+					SFP_PANIC("SFP: label too long (max length: %i)", max_label_len);
 				}
 				this->write<char>(label, label_len);
 				this->write<char>(":", 1);
@@ -65,7 +65,7 @@ namespace SFP {
 
 		template <typename T>
 		void write_num(const char* format, T value) {
-			char buf[MAX_VALUE_LEN];
+			char buf[max_value_len];
 			int len = sprintf(buf, format, value);
 			this->write<char>(buf, len);
 		}
@@ -173,7 +173,7 @@ namespace SFP {
 			if (this->indent == 0) {
 				return;
 			}
-			char buf[MAX_TAB_LEN];
+			char buf[max_tab_len];
 			this->read<char>(buf, this->indent);
 			for (size_t i = 0; i < this->indent; ++i) {
 				if (buf[i] != '\t') {
@@ -184,8 +184,8 @@ namespace SFP {
 
 		char* read_line() {
 			this->read_indent();
-			char* buf_ptr = (char*)std::malloc(sizeof(char) * MAX_LINE_LEN);
-			buf_ptr = std::fgets(buf_ptr, MAX_LINE_LEN, this->file);
+			char* buf_ptr = (char*)std::malloc(sizeof(char) * max_line_len);
+			buf_ptr = std::fgets(buf_ptr, max_line_len, this->file);
 			if (buf_ptr == nullptr) {
 				SFP_PANIC("SFP: fgets failed");
 			}
