@@ -1,4 +1,4 @@
-/// version: 6
+/// version: 7
 
 #ifndef SFP_PANIC
 #define SFP_PANIC(...) std::printf(__VA_ARGS__); std::exit(1);
@@ -27,11 +27,13 @@ namespace SFP {
 			return writer;
 		}
 
+#ifdef SFP_WCHAR
 		static Writer open_w(const wchar_t* file_path) {
 			Writer writer;
 			writer.file = _wfopen(file_path, L"wb");
 			return writer;
 		}
+#endif
 
 		void close() {
 			close_file(this->file);
@@ -162,11 +164,13 @@ namespace SFP {
 			return reader;
 		}
 
+#ifdef SFP_WCHAR
 		static Reader open_w(const wchar_t* file_path) {
 			Reader reader;
 			reader.file = _wfopen(file_path, L"rb");
 			return reader;
 		}
+#endif
 
 		void close() {
 			close_file(this->file);
